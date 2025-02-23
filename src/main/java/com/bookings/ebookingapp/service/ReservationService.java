@@ -3,11 +3,13 @@ package com.bookings.ebookingapp.service;
 import com.bookings.ebookingapp.model.BookingRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @Service
@@ -23,7 +25,7 @@ public class ReservationService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void createBooking(BookingRequest bookingRequest) {
+    public void createBooking(@Valid BookingRequest bookingRequest) {
         logger.info("Creating booking: {}", bookingRequest);
         ObjectMapper objectMapper = new ObjectMapper();
         try {

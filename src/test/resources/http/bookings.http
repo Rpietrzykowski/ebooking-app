@@ -3,8 +3,7 @@ POST http://localhost:8080/api/reservations/create
 Content-Type: application/json
 
 {
-  "bookingNumber": 16,
-  "name": "John Doe",
+  "bookingNumber": 22,
   "items": 5
 }
 
@@ -13,7 +12,7 @@ GET http://localhost:8080/api/booking/all
 Accept: application/json
 
 ### Get booking by booking number
-GET http://localhost:8080/api/booking/16
+GET http://localhost:8080/api/booking/33
 Accept: application/json
 
 ### Delete booking by booking number
