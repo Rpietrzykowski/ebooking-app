@@ -1,19 +1,31 @@
 package com.bookings.ebookingapp.exception;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(BadRequestException.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleBadRequestException(BadRequestException e) {
-        return e.getMessage();
+    public ResponseEntity<ValidationErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        List<ValidationErrorResponse.Violation> violations = ex.getBindingResult().getAllErrors().stream()
+                .map(error -> new ValidationErrorResponse.Violation(
+                        ((FieldError) error).getField(),
+                        error.getDefaultMessage()))
+                .collect(Collectors.toList());
+
+        ValidationErrorResponse errorResponse = new ValidationErrorResponse(violations);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ChangeSetPersister.NotFoundException.class)

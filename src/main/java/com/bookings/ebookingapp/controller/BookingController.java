@@ -24,30 +24,17 @@ public class BookingController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllBookings() {
-        try {
             List<BookingRequest> bookings = bookingService.getAllBookings();
-            if (bookings.isEmpty()) {
-                throw new NotFoundException("No bookings found");
-            }
             return ResponseEntity.ok(bookings);
-        } catch (Exception e) {
-            logger.error("Error retrieving bookings", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving bookings");
-        }
     }
 
     @GetMapping("/{bookingNumber}")
     public ResponseEntity<?> getBookingByNumber(@PathVariable int bookingNumber) {
-        try {
-            Optional<BookingRequest> booking = bookingService.getBookingByNumber(bookingNumber);
-            if (booking.isEmpty()) {
-                throw new NotFoundException("Booking number: " + bookingNumber + " not found");
-            }
-            return ResponseEntity.ok(booking);
-        } catch (Exception e) {
-            logger.error("Error retrieving booking reservation: " + bookingNumber, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving booking reservation: " + bookingNumber);
+        Optional<BookingRequest> booking = bookingService.getBookingByNumber(bookingNumber);
+        if (booking.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking number: " + bookingNumber + " was not found");
         }
+        return ResponseEntity.ok(booking);
     }
 
     @DeleteMapping("/{bookingNumber}")
@@ -56,11 +43,8 @@ public class BookingController {
             bookingService.deleteBookingByNumber(bookingNumber);
             return ResponseEntity.noContent().build();
         } catch (NotFoundException e) {
-            logger.error("Delete booking number: " + bookingNumber + " not found", e);
+            logger.error("Delete booking number: {} not found", bookingNumber, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Delete booking number: " + bookingNumber + " not found");
-        } catch (Exception e) {
-            logger.error("Error deleting booking number: " + bookingNumber, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting booking number: " + bookingNumber);
         }
     }
 }
