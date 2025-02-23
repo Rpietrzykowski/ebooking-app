@@ -1,0 +1,21 @@
+### Send Reservation Event
+POST http://localhost:8080/api/reservations/create
+Content-Type: application/json
+
+{
+  "bookingNumber": 16,
+  "name": "John Doe",
+  "items": 5
+}
+
+### Get all bookings
+GET http://localhost:8080/api/booking/all
+Accept: application/json
+
+### Get booking by booking number
+GET http://localhost:8080/api/booking/16
+Accept: application/json
+
+### Delete booking by booking number
+DELETE http://localhost:8080/api/booking/16
+Accept: application/json
