@@ -46,7 +46,7 @@ public class BookingRequest {
 
     @Override
     public String toString() {
-        return "BookingRequest{" +
+        return "{" +
                 "bookingNumber=" + bookingNumber +
                 ", name='" + name + '\'' +
                 ", items=" + items +

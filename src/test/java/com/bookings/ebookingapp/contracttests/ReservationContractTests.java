@@ -7,7 +7,7 @@ import com.jayway.jsonpath.JsonPath;
 import io.restassured.module.mockmvc.response.MockMvcResponse;
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
 import io.restassured.response.ResponseOptions;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
@@ -27,7 +27,7 @@ public class ReservationContractTests extends BaseTestClass {
 
         // given:
         MockMvcRequestSpecification request = given()
-                .header("Content-Type", "application/vnd.fraud.v1+json")
+                .header("Content-Type", "application/json")
                 .body(bookingRequest.toString());
 
         // when:
@@ -36,9 +36,9 @@ public class ReservationContractTests extends BaseTestClass {
 
         // then:
         assertThat(response.statusCode()).isEqualTo(200);
-        assertThat(response.header("Content-Type")).matches("application/vnd.fraud.v1.json.*");
+        assertThat(response.header("Content-Type")).matches("application/json");
         // and:
         DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
-        assertThatJson(parsedJson).field("['bookingNumber']").matches("[0-9]{2}");
+        assertThatJson(parsedJson).field("['bookingNumber']").isEqualTo(10);
     }
 }

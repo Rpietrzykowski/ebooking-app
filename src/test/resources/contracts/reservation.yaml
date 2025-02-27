@@ -1,0 +1,13 @@
+request:
+  method: POST
+  url: /api/reservations/create
+  body:
+    "bookingNumber": 11
+    "name": "Robert Pietrzykowski"
+    "items": 1
+  headers:
+    Content-Type: application/json
+response:
+  status: 200
+  headers:
+    Content-Type: application/json
