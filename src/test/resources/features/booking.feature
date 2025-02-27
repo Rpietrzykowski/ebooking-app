@@ -6,6 +6,6 @@ Feature: Booking Request
     Then the booking reservation <bookingNumber> should be saved in MongoDB with name <name> and items <items>
 
     Examples:
-      | bookingNumber | name | items |
-      | 1             | John | 2     |
-      | 2             | Jane | 3     |
+      | bookingNumber | name   | items |
+      | 1             | Robert | 2     |
+      | 2             | Marian | 3     |

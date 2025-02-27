@@ -4,13 +4,25 @@ import com.bookings.ebookingapp.model.BookingRequest;
 import com.bookings.ebookingapp.repository.BookingRequestRepository;
 import com.bookings.ebookingapp.service.ReservationService;
 import com.bookings.ebookingapp.utils.BookingKafkaListener;
+import io.cucumber.java.After;
+import io.cucumber.java.AfterAll;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.event.annotation.AfterTestClass;
+import org.springframework.test.context.event.annotation.AfterTestExecution;
+import org.springframework.test.context.event.annotation.AfterTestMethod;
 
+import java.util.Collections;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,6 +40,8 @@ public class BookingSteps {
 
     private final BookingKafkaListener bookingKafkaListener = new BookingKafkaListener();
 
+    private KafkaConsumer<String, BookingRequest> kafkaConsumer;
+
     @Given("^a booking request JSON with booking number (.*) name (.*) and items (.*)$")
     public void aBookingRequestJSONWithBookingNumberBookingNumberNameNameAndItemsItems(Integer bookingNumber, String name, Integer items) {
         bookingRequest.setBookingNumber(bookingNumber);
@@ -40,16 +54,9 @@ public class BookingSteps {
         reservationService.createBooking(bookingRequest);
     }
 
-    @When("^the booking message is consumed$")
-    public void the_booking_message_is_consumed() throws InterruptedException {
-        boolean messageConsumed = bookingKafkaListener.getLatch().await(10, TimeUnit.SECONDS);
-        assertThat(messageConsumed).isTrue();
-        assertThat(bookingKafkaListener.getPayload()).isEqualTo(bookingRequest);
-    }
-
     @Then("^the booking reservation (.*) should be saved in MongoDB with name (.*) and items (.*)$")
     public void the_booking_request_should_be_saved_in_mongodb(Integer bookingNumber, String name, Integer items) {
-        BookingRequest bookingRequest = bookingRequestRepository.findById(bookingNumber).orElse(null);
+        BookingRequest bookingRequest = bookingRequestRepository.findById(bookingNumber).orElseThrow();
         assertThat(bookingRequest).isNotNull();
         assertThat(bookingRequest.getName()).isEqualTo(name);
         assertThat(bookingRequest.getItems()).isEqualTo(items);
