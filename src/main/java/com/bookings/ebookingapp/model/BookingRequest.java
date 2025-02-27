@@ -47,8 +47,8 @@ public class BookingRequest {
     public String toString() {
         return "BookingRequest{" +
                 "bookingNumber=" + bookingNumber +
-                ", name='" + name + '\'' +
-                ", items=" + items +
+                " name='" + name + '\'' +
+                " items=" + items +
                 '}';
     }
 }

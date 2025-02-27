@@ -4,6 +4,7 @@ Content-Type: application/json
 
 {
   "bookingNumber": 22,
+  "name": "John",
   "items": 5
 }
 
